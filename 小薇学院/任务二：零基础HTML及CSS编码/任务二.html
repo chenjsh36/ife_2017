@@ -117,7 +117,7 @@
 			position: relative;
 			padding-left: 10px;
 		}
-		.from:before {
+		.from::before {
 			content: ' ';
 			position: absolute;
 			left: 0;
@@ -125,6 +125,46 @@
 			height: 100%;
 			width: 4px;
 			background-color: #dedede;
+		}
+		/* 引用 */
+		/*表单样式*/
+		form {
+			padding: 15px 0;
+			width: 100%;
+		}
+		form .form-group {
+			margin-bottom: 10px;
+		}
+		form .form-group::before,
+		form .form-group::after {
+			content: '';
+			display: table;
+			clear: both;
+		}
+		form .form-group .form-item-label {
+			position: relative;
+			float: left;
+			display: inline-block;
+			width: 16.6%;
+			text-align: right;
+			padding-right: 10px;
+			/*height: 32px;*/
+			/*line-height: 32px;*/
+			box-sizing: border-box;
+		}
+		form .form-group .form-item {
+			position: relative;
+			float: left;
+			width: 83.3%;
+		}
+		form .form-btn {
+			display: block;
+			background-color: blue;
+			color: #fff;
+			width: 100%;
+			height: 36px;
+			line-height: 36px;
+			border-radius: 4px;
 		}
 	</style>
 </head>
@@ -252,38 +292,56 @@
 		<h2 class="from">这里以后是一个侧栏，这是侧栏的标题</h2>
 		<form action="">
 			<div class="form-group">
-				<legend>侧栏注册窗口标题</legend>
-				<label for="mail">请输入邮箱地址</label>
-				<input type="text" placeholder="这是一个本地输入框" name="mail">
-				<p>邮箱地址请按要求格式输入</p>	
+				<label class="form-item-label" for="mail">请输入邮箱地址</label>
+				<div class="form-item">
+					<input type="text" placeholder="这是一个本地输入框" name="mail">
+					<p class="form-item-tip">邮箱地址请按要求格式输入</p>					
+				</div>
 			</div>
 			<div class="form-group">
-				<label for="password">请输入密码</label>
+				<label class="form-item-label" for="password">请输入密码</label>
+				<div class="form-item">
 				<input type="password" name="password" placeholder="这是一个本地输入框">
-				<label for="rpassword">请重复输入密码</label>
-				<input type="password" name="rpassword" placeholder="这是一个本地输入框">
+				</div>
 			</div>
 			<div class="form-group">
-				<label>性别：</label>
+				<label class="form-item-label" for="rpassword">请重复输入密码</label>
+				<div class="form-item">
+				<input type="password" name="rpassword" placeholder="这是一个本地输入框">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="form-item-label">性别：</label>
+				<div class="form-item">
 				<label for="sex1"><input type="radio" name="sex" value="1" id="sex1">男</label>
 				<label for="sex2"><input type="radio" name="sex" value="2" id="sex2">女</label>
-				
-				<label for="city">城市：</label>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="form-item-label" for="city">城市：</label>
+				<div class="form-item">
 				<select>
 					<option value ="volvo">北京</option>
 					<option value ="saab">杭州</option>
 					<option value="audi" selected="selected">上海</option>
 				</select>
-			
-				<label for="like">爱好：</label>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="form-item-label" for="like">爱好：</label>
+				<div class="form-item">
 				<label for="likesport"><input type="checkbox" name="like" value="sport" id="likesport">运动</label>
 				<label for="likeart"><input type="checkbox" name="art" value="sport" id="likeart">艺术</label>
 				<label for="likesce"><input type="checkbox" name="sce" value="sport" id="likesce">科学</label>
-			
-				<label for="">个人描述</label>
-				<textarea name="intro" id="formintro" cols="30" rows="10" placeholder="这是一个多行输入框"></textarea>
+				</div>
 			</div>
-			<button type="submit">确认提交</button>
+			<div class="form-group">
+				<label class="form-item-label" for="">个人描述</label>
+				<div class="form-item">
+				<textarea name="intro" id="formintro" cols="30" rows="10" placeholder="这是一个多行输入框"></textarea>
+				</div>
+			</div>
+			<button class="form-btn" type="submit">确认提交</button>
 		</form>
 	</nav>
 	<footer>版权所有@</footer>
