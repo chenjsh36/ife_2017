@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>三栏式布局</title>
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+		}
+		.three-container {
+			position: relative;
+			margin: 20px;
+			padding: 20px;
+			background-color: #eee;
+			border: 1px solid #999;
+			min-width: 400px;
+		}
+		.three-container:before,
+		.three-container:after {
+			content: ' ';
+			display: table;
+			clear: both;
+		}
+		.three-container .left-column {
+			position: relative;
+			box-sizing: border-box;
+			float: left;
+			background-color: #fff;
+			padding: 20px;
+			border: 1px solid #999;
+			width: 200px;
+		}
+		.three-container .left-column .pull-left {
+			float: left;
+		}
+		.three-container .left-column .team-logo {
+			position: relative;
+			/*float: left;*/
+			border: 1px solid #999;
+			background-color: #eee;
+			box-sizing: border-box;
+			height: 80px;
+			width: 80px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			flex-direction: column;
+			/*text-align: center;*/
+			/*padding: 15px 0;*/
+		}
+		.three-container .left-column .team-name {
+			position: relative;
+			float: right;
+			/*margin: 0 0px 0 10px;*/
+		}
+
+		.three-container .middle-column {
+			position: relative;
+			float: left;
+			background-color: #fff;
+			padding: 20px;
+			width: calc(100% - 320px - 40px);
+			overflow: hidden;
+			margin: 0 20px;
+			border: 1px solid #999;
+			box-sizing: border-box;
+		}
+		.three-container .middle-column article p {
+			margin-bottom: 15px;
+		}
+		.three-container .right-column {
+			position: relative;
+			box-sizing: border-box;
+			float: right;
+			margin: 0;
+			background-color: #fff;
+			/*padding: 20px;*/
+			border: 1px solid #999;
+			width: 120px;
+		}
+		.three-container .right-column .person-logo {
+			position: relative;
+			height: 80px;
+			width: 80px;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			margin: 20px auto;
+			background-color: #eee;
+		}
+	</style>
+</head>
+<body>
+	<div class="three-container">
+		<div class="left-column">
+			<div class="pull-left">
+				<div class="team-logo">
+					<p>团队logo</p>
+					<p>80 x 80</p>
+				</div>				
+			</div>
+			<div class="team-name">团队名称</div>
+		</div>
+
+		<div class="middle-column">
+			<article>
+				<p>关于你们团队的介绍</p>
+				<p>
+					寒假以后，我遇见了这样一位大学教授，高大壮硕，行动从容，微微含笑，为我们讲授诗词，因为曾经是体育系的，他看起来不同一般的中文系气质。每个周末，我们都要到老师家里上课，大家围着餐桌，并不用餐，而是解说一首诗或者一阕词。看见他朗然笑语，喷吐烟雾，我悄悄想着，这就是一个伟岸男子了吧？四十岁的老师，当时在学术界是很活跃的，意气风发，锋芒耀眼，上他的课，却从未停止兴味盎然地观看着他和他和家庭。
+
+					　　他有一个同样在大学里教书的妻子，两个儿子。当我们的课程即将结束时，师母和他的小儿子，有时会一起进门。师母提着一些日用品或食物，小男孩约摸10岁左右，背着小学生双肩带书包，脱下鞋子，睁着好奇的眼睛盯着我们瞧，并不畏生。老师会停下正在讲解的课程，望向他们，有时交谈两句，那样话语和眼神之中有不经意的眷恋。我渐渐明白，老师像一座绿杨垂柳的堤岸，他在微笑里，轻轻拥着妻与子，一大一小两艘船栖泊，所以，他是个伟岸的男子。
+				</p>
+				<p>
+					寒假以后，我遇见了这样一位大学教授，高大壮硕，行动从容，微微含笑，为我们讲授诗词，因为曾经是体育系的，他看起来不同一般的中文系气质。每个周末，我们都要到老师家里上课，大家围着餐桌，并不用餐，而是解说一首诗或者一阕词。看见他朗然笑语，喷吐烟雾，我悄悄想着，这就是一个伟岸男子了吧？四十岁的老师，当时在学术界是很活跃的，意气风发，锋芒耀眼，上他的课，却从未停止兴味盎然地观看着他和他和家庭。
+
+					　　他有一个同样在大学里教书的妻子，两个儿子。当我们的课程即将结束时，师母和他的小儿子，有时会一起进门。师母提着一些日用品或食物，小男孩约摸10岁左右，背着小学生双肩带书包，脱下鞋子，睁着好奇的眼睛盯着我们瞧，并不畏生。老师会停下正在讲解的课程，望向他们，有时交谈两句，那样话语和眼神之中有不经意的眷恋。我渐渐明白，老师像一座绿杨垂柳的堤岸，他在微笑里，轻轻拥着妻与子，一大一小两艘船栖泊，所以，他是个伟岸的男子。
+				</p>
+			</article>
+		</div>
+		
+		<div class="right-column">
+			<div class="person-logo">
+				<p>个人logo</p>
+				<p>80 x 80</p>
+			</div>
+			<div class="person-logo">
+				<p>个人logo</p>
+				<p>80 x 80</p>
+			</div>
+			<div class="person-logo">
+				<p>个人logo</p>
+				<p>80 x 80</p>
+			</div>
+			<div class="person-logo">
+				<p>个人logo</p>
+				<p>80 x 80</p>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
