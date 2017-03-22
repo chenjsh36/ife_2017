@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>定位居中</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        .gray-box {
+            position: absolute;
+
+            background-color: gray;
+            overflow: hidden;
+        }
+        .yellow-circle {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: yellow;
+        }
+        html {
+            height: 100%;
+            width: 100%;
+        }
+        body {
+            display: table;
+            height: 100%;
+            width: 100%;
+            vertical-align: middle;
+        }
+        .box-1 {
+            /*position: relative;*/
+            display: table-cell;
+            margin: auto;
+            vertical-align: middle;
+        }
+        .circle-1 {
+            position: absolute;
+            left: -50px;
+            top: -50px;
+        }
+        .circle-2 {
+            position: absolute;
+            right: -50px;
+            bottom: -50px;
+        }
+    </style>
+</head>
+<body>
+    <div class="gray-box box-1">
+        <p>你好啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊</p>
+        <p>你好啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊</p>
+        <p>你好啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊</p>
+        <p>你好啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊</p>
+        <p>你好啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊</p>
+        <p>你好啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊</p>            
+
+        <div class="yellow-circle circle-1"></div>
+        <div class="yellow-circle circle-2"></div>
+    </div>
+</body>
+</html>
