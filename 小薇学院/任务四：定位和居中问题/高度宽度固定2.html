@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>定位居中</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        .gray-box {
+            position: absolute;
+            width: 400px;
+            height: 200px;
+            background-color: gray;
+            overflow: hidden;
+        }
+        .yellow-circle {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: yellow;
+        }
+
+        .box-1 {
+            margin: auto;
+            left: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;    
+        }
+        .circle-1 {
+            position: absolute;
+            left: -50px;
+            top: -50px;
+        }
+        .circle-2 {
+            position: absolute;
+            right: -50px;
+            bottom: -50px;
+        }
+    </style>
+</head>
+<body>
+    <div class="gray-box box-1">
+        <div class="yellow-circle circle-1"></div>
+        <div class="yellow-circle circle-2"></div>
+    </div>
+</body>
+</html>
