@@ -6,5 +6,50 @@
 </head>
 <body>
     <script src="./poker.js"></script>
+    <script>
+        /**
+         * 1 同花大顺（Royal Flush）：最高为Ace（一点）的同花顺
+         * 2 同花顺（Straight Flush）：同一花色，顺序的牌。
+         * 3 四条（Four of a Kind，亦称“铁支”、“四张”或“炸弹”）：有四张同一点数的牌。
+         * 4 满堂红（Fullhouse，亦称“俘虏”、“骷髅”、“夫佬”、“葫芦”）：三张同一点数的牌，加一对其他点数的牌。
+         * 5 同花（Flush，简称“花”：五张同一花色的牌。
+         * 6 顺子（Straight，亦称“蛇”）：五张顺连的牌。
+         * 7 三条（Three of a kind，亦称“三张”）：有三张同一点数的牌。
+         * 8 两对（Two Pairs）：两张相同点数的牌，加另外两张相同点数的牌。
+         * 9 一对（One Pair）：两张相同点数的牌。
+         * 10 高牌（high card）：不符合上面任何一种牌型的牌型，由单牌且不连续不同花的组成，以点数决定大小。
+         */
+        var poker = new THPoker();
+        // 同花大顺
+        var b = ['红桃-10', '红桃-J', '红桃-Q', '红桃-K', '红桃-A', '梅花-8', '方角-5']
+        console.log(poker.getPokerType(b).type.cname)
+        // 同花顺
+        var b = ['红桃-10', '红桃-J', '红桃-Q', '红桃-K', '红桃-9', '梅花-8', '方角-5']
+        console.log(poker.getPokerType(b).type.cname)
+        // 四条
+        var b = ['红桃-10', '黑桃-10', '方角-10', '黑桃-10', '红桃-A', '梅花-8', '方角-5']
+        console.log(poker.getPokerType(b).type.cname)
+        // 满堂红
+        var b = ['红桃-10', '方角-10', '黑桃-10', '黑桃-2', '红桃-2', '梅花-8', '方角-5']
+        console.log(poker.getPokerType(b).type.cname)
+        // 同花
+        var b = ['红桃-10', '红桃-J', '红桃-Q', '红桃-K', '红桃-2', '梅花-8', '方角-5']
+        console.log(poker.getPokerType(b).type.cname)
+        // 顺子
+        var b = ['黑桃-10', '红桃-J', '红桃-Q', '红桃-K', '红桃-9', '梅花-8', '方角-5']
+        console.log(poker.getPokerType(b).type.cname)
+        // 三条
+        var b = ['黑桃-J', '红桃-J', '方角-J', '红桃-K', '红桃-A', '梅花-8', '方角-5']
+        console.log(poker.getPokerType(b).type.cname)
+        // 两对
+        var b = ['红桃-10', '黑桃-10', '黑桃-K', '红桃-K', '黑桃-5', '梅花-8', '方角-5']
+        console.log(poker.getPokerType(b).type.cname)
+        // 一对
+        var b = ['红桃-10', '红桃-J', '红桃-Q', '方角-A', '红桃-A', '梅花-8', '方角-5']
+        console.log(poker.getPokerType(b).type.cname)
+        // 高牌
+        var b = ['红桃-2', '黑桃-3', '红桃-4', '红桃-7', '红桃-A', '梅花-8', '方角-5']
+        console.log(poker.getPokerType(b).type.cname)
+    </script>
 </body>
 </html>

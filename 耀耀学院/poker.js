@@ -9,6 +9,70 @@ window.THPoker = function() {
     this.flower = ['方角', '梅花', '红桃', '黑桃']; // 花色
     this.letter = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']; // 牌面数字或字母
     this.split = '-'; // 牌面分隔符， 如 "梅花-2"
+    /*
+    * 1 同花大顺（Royal Flush）：最高为Ace（一点）的同花顺
+    * 2 同花顺（Straight Flush）：同一花色，顺序的牌。
+    * 3 四条（Four of a Kind，亦称“铁支”、“四张”或“炸弹”）：有四张同一点数的牌。
+    * 4 满堂红（Fullhouse，亦称“俘虏”、“骷髅”、“夫佬”、“葫芦”）：三张同一点数的牌，加一对其他点数的牌。
+    * 5 同花（Flush，简称“花”：五张同一花色的牌。
+    * 6 顺子（Straight，亦称“蛇”）：五张顺连的牌。
+    * 7 三条（Three of a kind，亦称“三张”）：有三张同一点数的牌。
+    * 8 两对（Two Pairs）：两张相同点数的牌，加另外两张相同点数的牌。
+    * 9 一对（One Pair）：两张相同点数的牌。
+    * 10 高牌（high card）：不符合上面任何一种牌型的牌型，由单牌且不连续不同花的组成，以点数决定大小。
+     */
+    this.pokerTypes = {
+        '同花大顺': {
+            cname: '同花大顺',
+            ename: 'Royal Flush',
+            level: 1
+        },
+        '同花顺': {
+            cname: '同花顺',
+            ename: 'Straight Flush',
+            level: 2
+        },
+        '四条': {
+            cname: '四条',
+            ename: 'Four of a Kind',
+            level: 3
+        },
+        '满堂红': {
+            cname: '满堂红',
+            ename: 'Fullhouse',
+            level: 4
+        },
+        '同花': {
+            cname: '同花',
+            ename: 'Flush',
+            level: 5
+        },
+        '顺子': {
+            cname: '顺子',
+            ename: 'Straight',
+            level: 6
+        },
+        '三条': {
+            cname: '三条',
+            ename: 'Three of a kind',
+            level: 7
+        },
+        '两对': {
+            cname: '两对',
+            ename: 'Two Pairs',
+            level: 8
+        },
+        '一对': {
+            cname: '一对',
+            ename: 'One Pair',
+            level: 9
+        },
+        '高牌': {
+            cname: '高牌',
+            ename: 'High Card',
+            level: 10
+        }
+    }
 };
 
 /**
@@ -72,7 +136,7 @@ THPoker.prototype._valueToIndex = function(value) {
  * @param  {Array} pokers 7张牌 ['梅花-A',]
  * @return {type}      牌型
  */
-THPoker.prototype.getType = function(pokers) {
+THPoker.prototype.getPokerType = function(pokers) {
     var pokerIndexs = [];
     var flowerCount = [[], [], [], []]; // 按花色分类
     var letterCount = [[], [], [], [], [], [], [], [], [], [], [], [], []]; // 按字母分类
@@ -96,23 +160,23 @@ THPoker.prototype.getType = function(pokers) {
     match = this._checkFlush(flowerCount, letterCount);
     if (match.match) {
         // 判断是否为顺子
-        match = this._checkStraight(flowerCount, letterCount, match.matchPokers);
+        match = this._checkStraightFlush(flowerCount, letterCount, match.matchPokers);
         if (match.match) {
             // 判断是否为同花大顺
-            match = this._checkHasAce(flowerCount, letterCount, match.matchPokers);
+            match = this._checkAceStraightFlush(flowerCount, letterCount, match.matchPokers);
             if (match.match) {
                 return {
-                    type: this.types['同花大顺'],
+                    type: this.pokerTypes['同花大顺'],
                     matchPokers: match.matchPokers
                 };
             }
             return {
-                type: this.types['同花顺'],
+                type: this.pokerTypes['同花顺'],
                 matchPokers: match.matchPokers
             }
         }
         return {
-            type: this.types['同花'],
+            type: this.pokerTypes['同花'],
             matchPokers: match.matchPokers
         }
     }
@@ -121,7 +185,7 @@ THPoker.prototype.getType = function(pokers) {
     match = this._checkStraight(flowerCount, letterCount);
     if (match.match) {
         return {
-            type: this.types['顺子'],
+            type: this.pokerTypes['顺子'],
             matchPokers: match.matchPokers
         }
     }
@@ -130,7 +194,7 @@ THPoker.prototype.getType = function(pokers) {
     match = this._checkFourOfKind(flowerCount, letterCount);
     if (match.match) {
         return {
-            type: this.types['四条'],
+            type: this.pokerTypes['四条'],
             matchPokers: match.matchPokers
         }
     }
@@ -142,12 +206,12 @@ THPoker.prototype.getType = function(pokers) {
         match = this._checkFullHouse(flowerCount, letterCount, match.matchPokers);
         if (match.match) {
             return {
-                type: this.types['葫芦'],
+                type: this.pokerTypes['满堂红'],
                 matchPokers: match.matchPokers
             }
         }
         return {
-            type: this.types['三条'],
+            type: this.pokerTypes['三条'],
             matchPokers: match.matchPokers
         }
     }
@@ -159,19 +223,19 @@ THPoker.prototype.getType = function(pokers) {
         match = this._checkTwoPair(flowerCount, letterCount, match.matchPokers);
         if (match.match) {
             return {
-                type: this.types['两对'],
+                type: this.pokerTypes['两对'],
                 matchPokers: match.matchPokers
             }
         }
         return {
-            type: this.types['一对'],
+            type: this.pokerTypes['一对'],
             matchPokers: match.matchPokers
         }
     }
 
     match = this._checkHighCard(flowerCount, letterCount);
     return {
-        type: this.types['高牌'],
+        type: this.pokerTypes['高牌'],
         matchPokers: match.matchPokers
     }
 }
@@ -213,7 +277,7 @@ THPoker.prototype._checkOnePair = function(flowerCount, letterCount) {
     }
 
     // 最多有三对，根据从 A K Q 。。。 4 3 2 的顺序取最大的
-    if (pairIndex >= 1) {
+    if (pairIndex.length >= 1) {
         match = true;
         if (pairIndex.indexOf(0) !== -1) { // 有A取A, A肯定在最后
             matchPokers = letterCount[pairIndex.length - 1];
@@ -310,9 +374,9 @@ THPoker.prototype._checkFullHouse = function(flowerCount, letterCount, matchPoke
     var matchThreeOfKind = this._checkThreeOfKind(flowerCount, letterCount);
 
     if (matchOnePair.match && matchThreeOfKind.match) {
+        match = true;
         matchPokers = matchOnePair.matchPokers.concat[matchThreeOfKind.matchPokers];
     }
-
     return {
         match: match,
         matchPokers: matchPokers
@@ -342,11 +406,11 @@ THPoker.prototype._checkStraight = function(flowerCount, letterCount, matchPoker
         straightArr.push(letterCount[0][0]); // 取A字母数组的第一张
     }
 
-    if (count === 5) {
+    if (count >= 5) {
         match = true;
         matchPokers = straightArr;
     }
-
+    // console.log('_checkStraight', letterCount, count);
     return {
         match: match,
         matchPokers: matchPokers
@@ -358,19 +422,21 @@ THPoker.prototype._checkStraightFlush = function(flowerCount, letterCount, match
     var match = false;
     var matchPokers = matchPokers || [];
     var matchFlush = this._checkFlush(flowerCount, letterCount);
-    var matchStaight = this._checkStraight(flowerCount, letterCount);
+    var matchStraight = this._checkStraight(flowerCount, letterCount);
     var matchFlower = '';
 
-    if (matchFlush.match && matchStaight.match) {
+    if (matchFlush.match && matchStraight.match) {
+        match = true;
         matchFlower = matchFlush.matchPokers[0].flowerIndex;
         matchPokers = [];
-        matchStaight.forEach((poker) => {
+        matchStraight.matchPokers.forEach((poker) => {
             matchPokers.push({
                 flowerIndex: matchFlower,
                 letterIndex: poker.letterIndex
             })
         })
     }
+    // console.log('_checkStraightFlush:', matchFlush, matchStraight, match)
     return {
         match: match,
         matchPokers: matchPokers
@@ -378,6 +444,98 @@ THPoker.prototype._checkStraightFlush = function(flowerCount, letterCount, match
 }
 
 
-THPoker.prototype._checkAceStraightFlush = function(flowerCount, letterCount, matchPokers) {
-    // Todo 。。。
+THPoker.prototype._checkAceStraightFlush = function(flowerCount, letterCount, initPockers) {
+    var match = false;
+    var matchPokers = initPockers || [];
+    var tmpPokers = [];
+    var matchFlush = this._checkFlush(flowerCount, letterCount);
+    var matchStraight = this._checkStraight(flowerCount, letterCount);
+    var matchHasAce = {};
+    var matchFlower = '';
+
+    // 是否为同花顺
+    if (matchFlush.match && matchStraight.match) {
+        matchFlower = matchFlush.matchPokers[0].flowerIndex;
+        tmpPokers = [];
+        matchStraight.matchPokers.forEach((poker) => {
+            tmpPokers.push({
+                flowerIndex: matchFlower,
+                letterIndex: poker.letterIndex
+            })
+        });
+        // 是否为皇家同花顺
+        matchHasAce = this._checkHasAce(tmpPokers);
+        if (matchHasAce.match) {
+            match = true;
+            matchPokers = tmpPokers;
+        }
+    }
+
+    return {
+        match: match,
+        matchPokers: matchPokers
+    }
+}
+
+
+THPoker.prototype._checkHasAce = function(letterCount) {
+    var match = false;
+    var len = letterCount.length;
+    var i = 0;
+    for (; i < len; i++) {
+        if (letterCount[i].letterIndex === 0) {
+            match = true;
+            break;
+        }
+    }
+    return {
+        match: match,
+        matchPokers: letterCount
+    }
+}
+
+/**
+ * 返回除了 initPockers 外的最高牌
+ * @param  {Array} flowerCount 花色分类的牌
+ * @param  {Array} letterCount 字母分类的牌
+ * @param  {Array} initPockers 排除掉的牌
+ * @return {Obj}             最高牌
+ */
+THPoker.prototype._checkHighCard = function(flowerCount, letterCount, initPockers) {
+    var match = true;
+    var matchPokers = initPockers || [];
+    var len = 0;
+    var matchIndex = -1;
+    
+    var oldPokers = flowerCount[0].concat(flowerCount[1], flowerCount[2], flowerCount[3]); // 一维扑克数组
+    var filterPokers = [];
+    var i = 0;
+    var ilen = oldPokers.length;
+    var j = 0;
+    var jlen = matchPokers.length;
+    var tmpPocker = {};
+
+    for (; i < ilen; i++) {
+        tmpPocker = oldPokers[i];
+        filterPokers.push(tmpPocker);
+        for (; j < jlen; j++) {
+            if (tmpPocker.flowerIndex === matchPokers[j].flowerIndex && tmpPocker.letterIndex === matchPokers[j].letterIndex) {
+                filterPokers.pop();
+            }
+        }
+    }
+
+    filterPokers.sort(function(a, b) {
+        if (a.letterIndex === b.letterIndex) {
+            return a.flowerIndex > b.flowerIndex ? -1 : 1;
+        }
+        if (a.letterIndex === 0) return -1;
+        if (b.letterIndex === 0) return 1;
+        return a.letterIndex > b.letterIndex ? -1 : 1;
+    })
+
+    return {
+        match: match,
+        matchPokers: [filterPokers[0]]
+    }
 }
