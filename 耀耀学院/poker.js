@@ -464,6 +464,52 @@ THPoker.prototype._checkFullHouse = function(flowerCount, letterCount, matchPoke
     }
 }
 
+// 顺子检测， 返回所给的同花牌中最大的顺子
+THPoker.prototype._checkStraight2 = function(initPockers) {
+    var match = false;
+    var matchPokers = initPockers;
+    var i = 0;
+    var len = matchPokers.length;
+    var count = 0;
+    var straightArr = [];
+    var letterIndexMap = [[], [], [], [], [], [], [], [], [], [], [], [], [], []]; // 根据 letter index 进行填坑
+
+    matchPokers.forEach(function(item) {
+        letterIndexMap[item.letterIndex] = [item];
+        if (item.letterIndex === 0) {
+            letterIndexMap[13] = [item]; // 如果有A的话
+        }
+    })
+
+    for (len = letterIndexMap.length; i < len; i++) {
+        if (letterIndexMap[i].length > 0) {
+            count++;
+            straightArr.push(letterIndexMap[i][0]);
+        } else {
+            if (count < 5) {
+                count = 0;
+                straightArr = [];                
+            }
+            else { // 如果已经连续五张以上，那么没必要继续了，因为后面也无法在连成顺子了
+                break;
+            }
+        }
+    }
+    if (count >= 5) {
+        match = true;
+        straightArr.reverse();
+        matchPokers = straightArr.splice(0, 5);
+    } else {
+        straightArr = [];
+    }
+
+    return {
+        match: match,
+        matchPokers: matchPokers,
+        matchAllPockers: straightArr
+    }
+}
+
 // 顺子监测，返回组合中最大的顺子
 THPoker.prototype._checkStraight = function(flowerCount, letterCount, matchPokers) {
     var match = false;
@@ -509,67 +555,113 @@ THPoker.prototype._checkStraight = function(flowerCount, letterCount, matchPoker
 }
 
 // 同花顺监测，返回组合中最大的同花顺
+// THPoker.prototype._checkStraightFlush = function(flowerCount, letterCount, matchPokers) {
+//     var match = false;
+//     var matchPokers = matchPokers || [];
+//     var matchFlush = this._checkFlush(flowerCount, letterCount);
+//     var matchStraight = this._checkStraight(flowerCount, letterCount);
+//     var matchFlower = '';
+
+//     if (matchFlush.match && matchStraight.match) {
+//         // 需要判断顺子的花色是否都是同花的花色!!!
+//         match = true;
+//         matchFlower = matchFlush.matchPokers[0].flowerIndex;
+//         matchStraight.matchPokers.forEach((poker) => {
+//             if (poker.flowerIndex !== matchFlower) {
+//                 match = false;
+//             }
+//         })
+
+//         if (match === true) {
+//             matchPokers = [];
+//             matchStraight.matchPokers.forEach((poker) => {
+//                 matchPokers.push({
+//                     flowerIndex: matchFlower,
+//                     letterIndex: poker.letterIndex
+//                 })
+//             })            
+//         }
+
+//     }
+//     return {
+//         match: match,
+//         matchPokers: matchPokers
+//     }
+// }
+
+// 同花顺检测，返回组合中最大的同花顺
 THPoker.prototype._checkStraightFlush = function(flowerCount, letterCount, matchPokers) {
     var match = false;
     var matchPokers = matchPokers || [];
     var matchFlush = this._checkFlush(flowerCount, letterCount);
-    var matchStraight = this._checkStraight(flowerCount, letterCount);
-    var matchFlower = '';
+    var matchAllPockers = [];
+    var matchStraight = {};
 
-    if (matchFlush.match && matchStraight.match) {
-        // 需要判断顺子的花色是否都是同花的花色!!!
-        match = true;
-        matchFlower = matchFlush.matchPokers[0].flowerIndex;
-        matchStraight.matchPokers.forEach((poker) => {
-            if (poker.flowerIndex !== matchFlower) {
-                match = false;
-            }
-        })
-
-        if (match === true) {
-            matchPokers = [];
-            matchStraight.matchPokers.forEach((poker) => {
-                matchPokers.push({
-                    flowerIndex: matchFlower,
-                    letterIndex: poker.letterIndex
-                })
-            })            
+    // 检测同花
+    if (matchFlush.match) {
+        // 取同花的所有牌，判断其中是否有顺子
+        matchAllPockers = matchFlush.matchAllPockers;
+        matchStraight = this._checkStraight2(matchAllPockers);
+        if (matchStraight.match) {
+            match = true;
+            matchPokers = matchStraight.matchPokers
         }
-
     }
+
     return {
         match: match,
-        matchPokers: matchPokers
+        // 返回最大的顺子
+        matchPokers: matchPokers 
     }
 }
+
+
 
 // 同花大顺监测，返回组合中最大的同花大顺
 THPoker.prototype._checkAceStraightFlush = function(flowerCount, letterCount, initPockers) {
     var match = false;
     var matchPokers = initPockers || [];
-    var tmpPokers = [];
-    var matchFlush = this._checkFlush(flowerCount, letterCount);
-    var matchStraight = this._checkStraight(flowerCount, letterCount);
-    var matchHasAce = {};
-    var matchFlower = '';
 
-    // 是否为同花顺
-    if (matchFlush.match && matchStraight.match) {
-        matchFlower = matchFlush.matchPokers[0].flowerIndex;
-        tmpPokers = [];
-        matchStraight.matchPokers.forEach((poker) => {
-            tmpPokers.push({
-                flowerIndex: matchFlower,
-                letterIndex: poker.letterIndex
-            })
-        });
-        // 是否为皇家同花顺
-        matchHasAce = this._checkHasAce(tmpPokers);
-        if (matchHasAce.match) {
+    var matchStraightFlush = this._checkStraightFlush(flowerCount, letterCount);
+    var matchStraightFlushPockers = [];
+
+    var matchHasAce = {};
+    var matchHasKing = {};
+
+    if (matchStraightFlush.match) {
+        // 是否同时有King 和 Ace
+        matchStraightFlushPockers = matchStraightFlush.matchPokers
+        matchHasAce = this._checkHasLetterIndex(matchStraightFlushPockers, 0);
+        matchHasKing = this._checkHasLetterIndex(matchStraightFlushPockers, 12);
+        if (matchHasAce.match && matchHasKing.match) {
             match = true;
-            matchPokers = tmpPokers;
+            matchPokers = matchStraightFlushPockers;
         }
     }
+
+    // var tmpPokers = [];
+    // var matchFlush = this._checkFlush(flowerCount, letterCount);
+    // var matchStraight = this._checkStraight(flowerCount, letterCount);
+    // var matchHasAce = {};
+    // var matchFlower = '';
+
+    // // 是否为同花顺
+    // if (matchFlush.match && matchStraight.match) {
+    //     matchFlower = matchFlush.matchPokers[0].flowerIndex;
+    //     tmpPokers = [];
+    //     matchStraight.matchPokers.forEach((poker) => {
+    //         tmpPokers.push({
+    //             flowerIndex: matchFlower,
+    //             letterIndex: poker.letterIndex
+    //         })
+    //     });
+    //     // 是否为皇家同花顺
+    //     matchHasAce = this._checkHasAce(tmpPokers);
+    //     if (matchHasAce.match) {
+    //         match = true;
+    //         matchPokers = tmpPokers;
+    //     }
+    // }
 
     return {
         match: match,
@@ -577,13 +669,13 @@ THPoker.prototype._checkAceStraightFlush = function(flowerCount, letterCount, in
     }
 }
 
-// 监测是否有 A ？
-THPoker.prototype._checkHasAce = function(letterCount) {
+// 监测是否有 某个字母
+THPoker.prototype._checkHasLetterIndex = function(letterCount, letterIndex) {
     var match = false;
     var len = letterCount.length;
     var i = 0;
     for (; i < len; i++) {
-        if (letterCount[i].letterIndex === 0) {
+        if (letterCount[i].letterIndex === letterIndex) {
             match = true;
             break;
         }
