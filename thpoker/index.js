@@ -21,9 +21,9 @@ app.use(function *(next){
 
 // response
 
-// app.use(function *(){
-//   this.body = 'Hello World';
-// });
+app.use(function *(){
+  this.body = 'Hello World';
+});
 
 app.use(function *pageNotFound(next) {
 	yield next;
