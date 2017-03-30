@@ -1,6 +1,7 @@
 var User = require('../model/user.js');
 var crypto = require('crypto');
 
+// 用户注册
 var fn_register = async (ctx, next) => {
     var {name = '', password = '', email = ''} = ctx.query;
     console.log(`register with name: ${name}, password: ${password}, email: ${email}`)
@@ -22,31 +23,23 @@ var fn_register = async (ctx, next) => {
         email
     });
 
-    await User.get(newUser.name, (err, user) => {
-        if (err) {
-            console.log('注册失败', err);
-            ctx.response.body = err;
-            return;
+    // 顺序执行
+    var checkIfExit = await User.pGet(newUser.name);
+    if (checkIfExit.code === 1) {
+        ctx.response.body = '注册失败';
+    } else if (checkIfExit.code === 0 && checkIfExit.result) {
+        ctx.response.body = '注册失败，用户已存在';
+    } else {
+        var saveUser = await newUser.pSave();
+        if (saveUser.code === 1) {
+            ctx.response.body = '注册过程出错';
+        } else {
+            ctx.response.body = '注册成功';
         }
-        if (user) {
-            console.log('用户已经存在');
-            ctx.response.body = '用户已经存在';
-            return;
-        }
-        newUser.save((err, user) => {
-            if (err) {
-                console.log('注册过程出错！');
-                ctx.response.body = '注册过程出错！';
-                return;
-            }
-            console.log('注册成功');
-            ctx.response.body = '注册成功'
-            return;
-        })
-    })
-    // ctx.response.body = '注册中...';
+    }
 }
 
+// 首页渲染
 var fn_index = async (ctx, next) => {
     // ctx.response.body = `<h1>Index</h1>
     //     <form action="/signin" method="post">
@@ -57,22 +50,44 @@ var fn_index = async (ctx, next) => {
     ctx.render('index.html', {name: 'cjs'});
 }
 
+// 用户登录
 var fn_signin = async (ctx, next) => {
-    var name = ctx.request.body.name || '',
-        password = ctx.request.body.password || '';
+    // var name = ctx.request.body.name || '',
+    //     password = ctx.request.body.password || '';
+    var {name = '', password = ''} = ctx.query;
 
-    console.log(`signin with name: ${name}, password: ${password}`);
-
-    if (name === 'koa' && password === '12345') {
-        ctx.response.body = '<h1>Welcome, ${name}</h1>';
+    var userGet = await User.pGet(name);
+    if (userGet.code === 1) {
+        ctx.response.body = '获取用户信息出错'
+    } else if (userGet.code === 0 && !userGet.result) {
+        ctx.response.body = '用户不存在'
     } else {
-        ctx.response.body = `<h1>Login failed!</h1>
-                            <p><a href="/ife/thpoker">Try again</a></p>`;
+        if (userGet.result.password !== password) {
+            ctx.response.body = '密码错误';
+        } else {
+            ctx.response.body = '登录成功';
+        }
     }
+}
+
+var checkNotLogin = (ctx, next) => {
+    if (ctx.session.user) {
+        return false;
+    }
+    return true;
+}
+
+var checkLogin = (ctx, next) => {
+    if (!ctx.session.user) {
+        return true;
+    }
+    return false;
 }
 
 module.exports = {
     'GET /ife/thpoker/user/register': fn_register,
+    // 'POST /ife/thpoker/user/register': fn_register,
     'GET /ife/thpoker': fn_index,
-    'POST /ife/thpoker/signin': fn_signin
+    'GET /ife/thpoker/user/signin': fn_signin,
+    // 'POST /ife/thpoker/user/signin': fn_signin
 }

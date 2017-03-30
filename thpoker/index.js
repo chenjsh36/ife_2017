@@ -31,17 +31,17 @@ app.use(async (ctx, next) => {
     await next();
 });
 
-// // use session
-// const CONFIG = {
-//     key: 'koa:sess', // (string) cookie key (default is koa:sess)
-//     maxAge: 86400000, // (number) maxAge in ms (default is 1 days)
-//     overwrite: true, // (boolean) can overwrite or not (default true)
-//     httpOnly: true, // (boolean) httpOnly or not (default true)
-//     signed: false, // (boolean) signed or not (default true)
-//     // store: external session stores  
-// };
-// app.use(session(CONFIG, app));
-// // or if you prefer all default config, just use => app.use(session(app));
+// use session
+const CONFIG = {
+    key: 'koa:sess', // (string) cookie key (default is koa:sess)
+    maxAge: 86400000, // (number) maxAge in ms (default is 1 days)
+    overwrite: true, // (boolean) can overwrite or not (default true)
+    httpOnly: true, // (boolean) httpOnly or not (default true)
+    signed: false, // (boolean) signed or not (default true)
+    // store: external session stores  
+};
+app.use(session(CONFIG, app));
+// or if you prefer all default config, just use => app.use(session(app));
 // app.use(ctx => {
 //   // ignore favicon
 //   if (ctx.path === '/favicon.ico') return;

@@ -1,3 +1,4 @@
+
 var mongodb = require('./db');
 var settings = require('../settings.js');
 var crypto = require('crypto');
@@ -6,21 +7,21 @@ function User(user) {
     this.name = user.name;
     this.password = user.password;
     this.email = user.email;
-}
+};
 
 module.exports = User;
 
 //存储用户信息
 User.prototype.save = function(callback) {
     var md5 = crypto.createHash('md5'),
-            email_MD5 = md5.update(this.email.toLowerCase()).digest('hex'),
-            head = "http://www.gravatar.com/avatar/" + email_MD5 + "?s=48";
+        email_MD5 = md5.update(this.email.toLowerCase()).digest('hex'),
+        head = "http://www.gravatar.com/avatar/" + email_MD5 + "?s=48";
     //要存入数据库的用户信息文档
     var user = {
-            name: this.name,
-            password: this.password,
-            email: this.email,
-            head: head
+        name: this.name,
+        password: this.password,
+        email: this.email,
+        head: head
     };
     //打开数据库
     mongodb.open(function (err, db) {
@@ -49,6 +50,59 @@ User.prototype.save = function(callback) {
 
     });
 };
+
+User.prototype.pSave = function() {
+    var md5 = crypto.createHash('md5'),
+        email_MD5 = md5.update(this.email.toLowerCase()).digest('hex'),
+        head = 'http://www.gravatar.com/avatar/' + email_MD5 + '?s=48';
+    var user = {
+        name: this.name,
+        password: this.password,
+        email: this.email,
+        head: head
+    };
+    var promise = new Promise((resolve, reject) => {
+        mongodb.open((err, db) => {
+            if (err) {
+                reject({
+                    code: 1,
+                    msg: err
+                });
+                return;
+            }
+            db.authenticate(settings.username, settings.password, () => {
+                db.collection('users', (err, collection) => {
+                    if (err) {
+                        reject({
+                            code: 1,
+                            msg: err
+                        });
+                        return;
+                    }
+                    collection.insert(user, {
+                        safe: true
+                    }, (err, user) => {
+                        mongodb.close();
+                        if (err) {
+                            reject({
+                                code: 1,
+                                msg: err
+                            });
+                            return;
+                        }
+                        resolve({
+                            code: 0,
+                            result:user[0]
+                        });
+                    })
+                })                
+            })
+
+        })
+    });
+    return promise;
+}
+
 
 //读取用户信息
 User.get = function(name, callback) {
@@ -79,3 +133,47 @@ User.get = function(name, callback) {
 
     });
 };
+
+
+User.pGet = function(name) {
+    var promise = new Promise((resolve, reject) => {
+        mongodb.open((err, db) => {
+            if (err) {
+                reject({
+                    code: 1,
+                    msg: err
+                });
+                return;
+            }
+            db.authenticate(settings.username, settings.password, () => {
+                db.collection('users', (err, collection) => {
+                    if (err) {
+                        mongodb.close();
+                        reject({
+                            code: 1,
+                            msg: err
+                        });
+                        return;
+                    }
+                    collection.findOne({
+                        name: name
+                    }, (err, user) => {
+                        mongodb.close();
+                        if (err) {
+                            reject({
+                                code: 1,
+                                msg: err
+                            });
+                            return;
+                        }
+                        resolve({
+                            code: 0,
+                            result: user
+                        });
+                    })
+                })
+            })
+        })
+    })
+    return promise;
+}
