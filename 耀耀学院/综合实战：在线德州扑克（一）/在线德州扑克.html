@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>在线德州扑克</title>
+    <style type="text/css">
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        .select-poker {
+            position: relative;
+            padding: 15px;
+            background-color: gray;
+        }
+        .select-poker .flower,
+        .select-poker .number {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        .select-poker .flower .flower-type,
+        .select-poker .number .number-type {
+            position: relative;
+            display: inline-block;
+            border: 1px solid #333;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .select-poker .flower .flower-type:hover,
+        .select-poker .flower .flower-type.active,
+        .select-poker .number .number-type:hover,
+        .select-poker .number .number-type.active {
+            background-color: #eee;
+        }
+
+        .poker-group {
+            position: relative;
+            border: 1px solid #000;
+            border-radius: 4px;
+            margin: 15px;
+            padding: 10px;
+        }
+        .poker-group:before,
+        .poker-group:after {
+            content: ' ';
+            display: table;
+            clear: both;
+        }
+        .poker-group .poker-item {
+            position: relative;
+            float: left;
+            width: 60px;
+            height: 100px;
+            text-align: center;
+            line-height: 100px;
+            border: 1px solid #000;
+            margin: 0 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="select-poker">
+        <div class="flower">
+            <span class="flower-type">方角</span>
+            <span class="flower-type">梅花</span>
+            <span class="flower-type">红桃</span>
+            <span class="flower-type">黑桃</span>
+        </div>
+        <div class="number">
+            <span class="number-type">A</span>
+            <span class="number-type">2</span>
+            <span class="number-type">3</span>
+            <span class="number-type">4</span>
+            <span class="number-type">5</span>
+            <span class="number-type">6</span>
+            <span class="number-type">7</span>
+            <span class="number-type">8</span>
+            <span class="number-type">9</span>
+            <span class="number-type">10</span>
+            <span class="number-type">J</span>
+            <span class="number-type">Q</span>
+            <span class="number-type">K</span>
+        </div>
+        <button class="addPoker">添加一张扑克</button>
+    </div>
+    <div class="poker-group">
+        <div class="poker-item"></div>
+        <div class="poker-item"></div>
+        <div class="poker-item"></div>
+        <div class="poker-item"></div>
+        <div class="poker-item"></div>
+        <div class="poker-item"></div>
+        <div class="poker-item"></div>
+        <div class="poker-type">
+            牌型：
+        </div>
+        <button class="group-select" onClick="selectPokerGroup(0)">
+            选择该牌组
+        </button>
+    </div>  
+    <div class="poker-group">
+        <div class="poker-item"></div>
+        <div class="poker-item"></div>
+        <div class="poker-item"></div>
+        <div class="poker-item"></div>
+        <div class="poker-item"></div>
+        <div class="poker-item"></div>
+        <div class="poker-item"></div>
+        <div class="poker-type">
+            牌型：
+        </div>
+        <button class="group-select" onClick="selectPokerGroup(1)">
+            选择该牌组
+        </button>
+    </div>  
+    <div class="poker-group">
+        <div class="poker-item"></div>
+        <div class="poker-item"></div>
+        <div class="poker-item"></div>
+        <div class="poker-item"></div>
+        <div class="poker-item"></div>
+        <div class="poker-item"></div>
+        <div class="poker-item"></div>
+        <div class="poker-type">
+            牌型：
+        </div>
+        <button class="group-select" onClick="selectPokerGroup(2)">
+            选择该牌组
+        </button>
+    </div>
+    <button onClick="showCpEnd()">比较这三组的大小</button>
+    <div class="group-cp-end"></div>
+    <script src="./poker.js"></script>
+
+    <script>
+        /**
+         * 1 同花大顺（Royal Flush）：最高为Ace（一点）的同花顺
+         * 2 同花顺（Straight Flush）：同一花色，顺序的牌。
+         * 3 四条（Four of a Kind，亦称“铁支”、“四张”或“炸弹”）：有四张同一点数的牌。
+         * 4 满堂红（Fullhouse，亦称“俘虏”、“骷髅”、“夫佬”、“葫芦”）：三张同一点数的牌，加一对其他点数的牌。
+         * 5 同花（Flush，简称“花”：五张同一花色的牌。
+         * 6 顺子（Straight，亦称“蛇”）：五张顺连的牌。
+         * 7 三条（Three of a kind，亦称“三张”）：有三张同一点数的牌。
+         * 8 两对（Two Pairs）：两张相同点数的牌，加另外两张相同点数的牌。
+         * 9 一对（One Pair）：两张相同点数的牌。
+         * 10 高牌（high card）：不符合上面任何一种牌型的牌型，由单牌且不连续不同花的组成，以点数决定大小。
+         */
+        var poker = new THPoker();
+        var pokersName = [
+            '同花大顺',
+            '同花顺',
+            '四条',
+            '满堂红',
+            '同花',
+            '顺子',
+            '三条',
+            '两对',
+            '一对',
+            '高牌',
+        ];
+        var pokers = [
+            ['红桃-A', '红桃-J', '红桃-Q', '红桃-K', '红桃-9', '红桃-10', '方角-5'],
+            ['红桃-3', '红桃-J', '红桃-Q', '红桃-K', '红桃-9', '红桃-10', '方角-5'],
+            ['红桃-10', '黑桃-10', '方角-10', '梅花-10', '方角-8', '红桃-8', '梅花-8'],
+            ['红桃-10', '方角-10', '黑桃-10', '黑桃-2', '红桃-2', '梅花-8', '方角-5'],
+            ['红桃-2', '红桃-J', '红桃-Q', '红桃-K', '红桃-5', '红桃-8', '方角-5'],
+            ['黑桃-10', '红桃-J', '红桃-Q', '红桃-K', '红桃-9', '梅花-8', '方角-5'],
+            ['黑桃-J', '红桃-J', '方角-J', '红桃-K', '红桃-A', '梅花-8', '方角-5'],
+            ['红桃-10', '黑桃-10', '黑桃-K', '红桃-K', '黑桃-5', '梅花-8', '方角-5'],
+            ['红桃-10', '红桃-J', '红桃-Q', '方角-A', '红桃-A', '梅花-8', '方角-5'],
+            ['红桃-2', '黑桃-3', '红桃-4', '红桃-7', '红桃-A', '梅花-8', '方角-5']
+        ];
+        var pokerTypes = [];
+        for (var i = 0, len = 10; i < len; i++) {
+            pokerTypes.push(poker.getPokerType(pokers[i]));
+            console.log(pokersName[i], pokerTypes[i], pokerTypes[i].type.cname);
+        }
+
+
+        console.log('比较牌型大小：', poker.comparePokers(pokerTypes))
+    </script>
+
+    <script type="text/javascript">
+        var pokerNameGroups = [[], [], []];
+        var pokerGroups = [[], [], []];
+        var pokerTypeGroups = [[], [], []];
+        var pokerGroupsCurIndex = 0;
+
+        // 添加一张扑克
+        var addPokerBtn = document.querySelector('.addPoker');
+        addPokerBtn.addEventListener('click', function() {
+            console.log('pokerGroupsCurIndex:', pokerGroupsCurIndex);
+            // 添加当前选择的牌型
+            pokerNameGroups[pokerGroupsCurIndex].push(currentFlower + '-' + currentNumber);
+            while (pokerNameGroups[pokerGroupsCurIndex].length > 7) {
+                pokerNameGroups[pokerGroupsCurIndex].shift();
+            }
+            refreshPokerGroup();
+        }, false)
+        
+        function refreshPokerGroup() {
+            var domPokerGroups = document.querySelectorAll('.poker-group');
+            var domCurPokerGroup = domPokerGroups[pokerGroupsCurIndex];
+            var domPokerItems = domCurPokerGroup.querySelectorAll('.poker-item');
+            domPokerItems.forEach(function(item, index) {
+                item.innerText = pokerNameGroups[pokerGroupsCurIndex][index] || '';
+            })
+
+            var domPokerType = domCurPokerGroup.querySelector('.poker-type');
+            if (pokerNameGroups[pokerGroupsCurIndex].length >= 7) {
+                pokerTypeGroups[pokerGroupsCurIndex] = poker.getPokerType(pokerNameGroups[pokerGroupsCurIndex]);
+                domPokerType.innerText = pokerTypeGroups[pokerGroupsCurIndex].type.cname + '(' + getPockerNames(pokerTypeGroups[pokerGroupsCurIndex].matchPokers) + ')';
+            }
+        }
+        function getPockerNames(list) {
+            var retstr = '';
+            for (var i = 0, len = list.length; i < len; i++) {
+                retstr += poker.indexToName(list[i]);
+                retstr += ','                
+            }
+            return retstr;
+        }
+        // 结束 添加一张扑克
+
+        // 切换花色
+        var flowers = document.querySelectorAll('.flower-type');
+        var currentFlower = '方角';
+        flowers.forEach(function(item) {
+            item.addEventListener('click', function(event) {
+                var target = event.target;
+                currentFlower = target.innerText;
+                console.log('click', currentFlower);
+            })
+        })
+        // 结束切换花色
+        // 切换数字
+        var number = document.querySelectorAll('.number-type');
+        var currentNumber = 'A';
+        number.forEach(function(item) {
+            item.addEventListener('click', function(event) {
+                var target = event.target;
+                currentNumber = target.innerText;
+                console.log('click', currentNumber);
+            })
+        })
+        // 结束切换数字
+        
+        // 牌组选择
+        function selectPokerGroup(index) {
+            console.log('click', index);
+            pokerGroupsCurIndex = index;
+        }
+        // 结束牌组选择
+        
+        // 牌组比较
+        function showCpEnd() {
+            var end = poker.comparePokers(pokerTypeGroups);
+            var domEnd = document.querySelector('.group-cp-end');
+            var test = '获胜的是\n';
+            console.log('end:', end);
+            for (var i = 0, len = end.length; i < len; i++) {
+                console.log(getPockerNames(end[i]));
+                test += getPockerNames(end[i].matchPokers);
+                test += '\n'
+            }
+            // end.forEach(function(item) {
+            //     test += getPockerNames(item);
+            // })
+            domEnd.innerText = test;
+        }
+        // 结束牌组比较
+    </script>
+</body>
+</html>

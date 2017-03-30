@@ -1,0 +1,30 @@
+{
+  "name": "thpoker",
+  "version": "1.0.0",
+  "description": "在线德州扑克",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "vue",
+    "koa",
+    "mongodb",
+    "socket"
+  ],
+  "author": "chenjsh36",
+  "license": "ISC",
+  "dependencies": {
+    "crypto": "0.0.3",
+    "koa": "^2.2.0",
+    "koa-basic-auth": "^2.0.0",
+    "koa-bodyparser": "^4.2.0",
+    "koa-mongo": "^0.7.0",
+    "koa-router": "^7.1.0",
+    "koa-session": "^5.0.0",
+    "mime": "^1.3.4",
+    "mz": "^2.6.0",
+    "nodemon": "^1.11.0",
+    "nunjucks": "^3.0.0"
+  }
+}
