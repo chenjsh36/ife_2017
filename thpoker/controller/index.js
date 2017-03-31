@@ -70,6 +70,11 @@ var fn_signin = async (ctx, next) => {
     }
 }
 
+// 用户登出
+var fn_signout = async (ctx, next) => {
+    ctx.session.user = undefined;
+}
+
 var checkNotLogin = (ctx, next) => {
     if (ctx.session.user) {
         return false;
