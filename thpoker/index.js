@@ -57,7 +57,7 @@ app.use(bodyParser());
 // 处理静态文件
 app.use(staticFiles('/static/', __dirname + '/static'));
 
-app.use(templating('view', {
+app.use(templating('webfe', {
     noCache: !isProduction,
     watch: !isProduction
 }));
