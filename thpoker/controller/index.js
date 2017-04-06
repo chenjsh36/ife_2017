@@ -73,6 +73,7 @@ var fn_signin = async (ctx, next) => {
 // 用户登出
 var fn_signout = async (ctx, next) => {
     ctx.session.user = undefined;
+    ctx.response.body = '登出';
 }
 
 var checkNotLogin = (ctx, next) => {
@@ -95,4 +96,5 @@ module.exports = {
     'GET /ife/thpoker': fn_index,
     'GET /ife/thpoker/user/signin': fn_signin,
     // 'POST /ife/thpoker/user/signin': fn_signin
+    'GET /ife/thpoker/user/signout': fn_signout
 }
