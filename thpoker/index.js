@@ -10,6 +10,7 @@ const templating = require('./templating.js');
 const isProduction = process.env.NODE_ENV === 'production';
 const app = module.exports = new koa();
 
+
 // x-response-time
 // app.use(function *(next){
 //   var start = new Date;

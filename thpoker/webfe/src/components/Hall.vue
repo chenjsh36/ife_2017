@@ -24,6 +24,8 @@
 </template>
 <script>
     import $ from 'jquery'
+    // import WebSocket from 'ws'
+    // const WebSocket = require('ws')
 
     export default {
         data() {
@@ -154,6 +156,46 @@
                     }
                     this.roomList = data.data.roomList;
                 })
+            },
+            connectGameServer() {
+                let ws = new WebSocket('ws://localhost:3000/ws/chat')
+                // ws.send('hello');
+                let context = this;
+
+                ws.onopen = function(msg) {
+                    console.log('onopen:', msg);
+                    ws.send('open to send');
+                }
+                ws.onerror = function(err) {
+                    console.log('onerror:', err);
+                }
+                ws.onclose = function() {
+                    console.log('onclose');
+                }
+                ws.onmessage = function(msg) {
+                    console.log(msg);
+                    // ws.send('Hello!');
+                    var jsonMsg = JSON.parse(msg);
+
+                    switch (jsonMsg.type) {
+                        case 'userList':
+                            context.userList = jsonMsg.data;
+                            break;
+                        case 'userJoin':
+                            context.addUser(jsonMsg.data);
+                            context.addMessage(jsonMsg);
+                            break;
+                        case 'userLeft':
+                            context.rmUser(jsonMsg.data);
+                            context.addMessage(jsonMsg);
+                            break;
+                        case 'userChat':
+                            context.addMessage(jsonMsg);
+                            break;
+                        default:
+                            console.log('意料外的信息!');
+                    }
+                };
             }
         },
         mounted() {
@@ -162,7 +204,7 @@
             .then((data) => {
                 if (data.code !== 0) {
                     this.$router.push({
-                        path: '/user/login'
+                        path: '/user/signin'
                     })
                     return;
                 }
@@ -171,6 +213,8 @@
             })
 
             this.showRoomList();
+
+            this.connectGameServer();
         }
     }
 </script>
