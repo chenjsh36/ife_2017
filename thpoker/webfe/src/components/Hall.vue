@@ -1,23 +1,38 @@
 <template>
     <div class="hall-container">
         <!-- 游戏大厅 -->
-        <div class="topbar">
+        <div class="topbar bg-black font-white">
             <div class="topbar-title">Hall</div>
             <div class="user-info" v-if="ifLogin">
                 <div class="user-info-item">{{user.name}}</div>
-                <div class="user-info-item" @click="handleSignout">登出</div>
+                <!-- <div class="user-info-item" @click="handleSignout">登出</div> -->
+                <el-button type="text" @click="handleSignout">登出</el-button>
             </div>
         </div>
         <div class="content">
-            <div class="room-create">
-                <button @click="handleRoomCreate">创建房间</button>
-            </div>
-            <div class="roomlist">
-                房间列表
-                <div class="room" v-for="item in roomList">
-                    房间名称： {{item.name}}
-                </div>
-            </div>            
+            <el-row :gutter="20">
+                <el-col :span="6">
+                    <div class="bg-light-black font-gray rooms-container">
+                        <h3>房间列表</h3>
+                        <div class="room-create">
+                            <el-input placeholder="请输入待创建的房间名称" v-model="roomName">
+                                <el-button slot="append" icon="plus" @click="handleRoomCreate()"></el-button>
+                            </el-input>
+                        </div>
+                        <div class="roomlist">
+                            <div class="room" v-for="item in roomList">
+                                {{item.name}}
+                            </div>
+                        </div>                           
+                    </div>
+                        
+                </el-col>
+                <el-col :span="18">
+                    <div class="bg-gray cur-room">
+                        房间                        
+                    </div>
+                </el-col>
+            </el-row>
         </div>
 
     </div>
@@ -214,11 +229,11 @@
 
             this.showRoomList();
 
-            this.connectGameServer();
+            // this.connectGameServer();
         }
     }
 </script>
-<style scoped>
+<style scoped lang="less">
     .hall-container {
         position: relative;
     }
@@ -230,7 +245,6 @@
         left: 0;
         right: 0;
         height: 40px;
-        background-color: gray;
     }
     .topbar:before,
     .topbar:after {
@@ -273,8 +287,28 @@
         margin-top: 40px;
     }
     /*房间列表*/
-    .roomlist {
+    .rooms-container {
         position: relative;
+        margin: 10px 10px;
+        padding: 15px 10px;
+        border-radius: 4px;
+        .room-create {
+            margin: 10px 0;
+        }
+        .roomlist {
+            position: relative;
+            margin: 10px 0;
+            .room {
+                position: relative;
+                border-bottom: 1px solid #eee;
+                padding: 5px;
+                &:last-child {
+                    border-bottom: none;
+                }
+            }
+        }
+
     }
+
     /*end 房间列表*/
 </style>

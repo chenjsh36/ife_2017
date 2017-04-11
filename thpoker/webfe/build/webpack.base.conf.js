@@ -49,7 +49,7 @@ module.exports = {
       {
         test: /\.less$/,
         include: [resolve('src'), resolve('test')],
-        loader: ExtractTextPlugin.extract({use: 'css-loader?minimize!less'})
+        loader: 'css!less'
       },
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
