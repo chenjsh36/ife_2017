@@ -12,7 +12,9 @@ wss.on('connection', function(ws) {
     // console.log(ws.upgradeReq.headers.cookie, Object.keys(ws.upgradeReq.headers));
 
     // 识别用户
-    // ws.user = user;
+    // Todo 识别用户
+
+    // 隔离开不同房间
 
     // 绑定 websocketServer
     ws.wss = wss;

@@ -52,7 +52,9 @@
                     head: '',
                     email: ''
                 },
-                roomList: []
+                roomList: [],
+                roomName: '',
+                ws: null // websocket 
             }
         },
         methods: {
@@ -109,6 +111,7 @@
 
                 return def.promise();
             },
+            // 请求获取房间列表
             ajaxRoomList() {
                 var def = $.Deferred();
 
@@ -127,6 +130,7 @@
                 });
                 return def.promise();
             },
+            // 请求创建房间
             ajaxRoomCreate(sendData) {
                 var def = $.Deferred();
 
@@ -146,6 +150,7 @@
                 });
                 return def.promise();
             },
+            // 显示房间列表
             showRoomList() {
                 this.ajaxRoomList()
                 .then((data) => {
@@ -162,6 +167,7 @@
             handleRoomCreate() {
                 this.ajaxRoomCreate()
                 .then((data) => {
+                    var wsData = {};
                     if (data.code !== 0) {
                         this.$message({
                             type: 'warning',
@@ -170,6 +176,10 @@
                         return;
                     }
                     this.roomList = data.data.roomList;
+                    wsData = {
+                        type: 'roomList'
+                    }
+                    this.ws.send(wsData);
                 })
             },
             connectGameServer() {
@@ -180,12 +190,14 @@
                 ws.onopen = function(msg) {
                     console.log('onopen:', msg);
                     ws.send('open to send');
+                    context.ws = ws;
                 }
                 ws.onerror = function(err) {
                     console.log('onerror:', err);
                 }
                 ws.onclose = function() {
                     console.log('onclose');
+                    context.ws = null;
                 }
                 ws.onmessage = function(msg) {
                     console.log(msg);
@@ -206,6 +218,9 @@
                             break;
                         case 'userChat':
                             context.addMessage(jsonMsg);
+                            break;
+                        case 'roomlist': 
+                            context.updateRoomList(jsonMsg.data);
                             break;
                         default:
                             console.log('意料外的信息!');

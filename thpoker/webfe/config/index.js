@@ -33,7 +33,7 @@ module.exports = {
                 return (pathname.match('^/ife/thpoker/api'));
             },
             changeOrigin: true,
-            target: 'http://192.168.0.101:3080',
+            target: 'http://192.168.0.103:3080',
             ws: true
         }
     },
