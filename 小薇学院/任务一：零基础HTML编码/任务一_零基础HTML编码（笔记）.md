@@ -193,6 +193,7 @@ HTML 的标签按照功能可以划分得很清晰:
     * thead 适合放表格的表头行
     * tbody 表格的主体部分
     * tfoot 表格的脚注部分
+* table 合并边框： ```table { border-collapse: collapse;}```
 * form表单元素
     * label标签，为input元素定义标注，改进了表单控件的可用性，当你点击到label标签时，会自动聚焦到对应控件上，label标签一般有两种用法：
         1. label的for属性与控件的id对应
